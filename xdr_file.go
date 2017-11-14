@@ -11,7 +11,11 @@ type XdrDigest []byte
 const SizeofXdrFile = 2*SizeofInt32 + 1*DigestSize
 
 type XdrFile struct {
-	Size   uint32
+	Len    uint32
 	Bkdr   Bkdr
 	Digest [DigestSize]byte
+}
+
+func (me *XdrFile) Size() int {
+	return SizeofXdrFile
 }

@@ -77,7 +77,7 @@ func (me *XdrReader) DnsIp4(xdr *Xdr, obj *XdrDns, idx int) XdrIp4Addr {
 func (me *XdrReader) DnsIp6(xdr *Xdr, obj *XdrDns, idx int) XdrIp6Addr {
 	entry := me.xdrArrayEntry(xdr, &obj.Ip, idx)
 	if nil != entry {
-		return XdrIp6Addr(ObjToSlice(entry, int(obj.Ip.Size)))
+		return XdrIp6Addr(ObjToSlice(entry, int(obj.Ip.Len)))
 	} else {
 		return nil
 	}

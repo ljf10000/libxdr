@@ -18,9 +18,13 @@ const SizeofXdrArray = 2*SizeofByte + SizeofInt16 + 2*SizeofInt32
 type XdrArray struct {
 	V      byte
 	Type   byte
-	Count  uint16
-	Size   uint32
+	Count  uint16 // entry count
+	Len    uint32 // entry size
 	Offset XdrOffset
+}
+
+func (me *XdrArray) Size() int {
+	return SizeofXdrArray
 }
 
 func (me *XdrArray) IsEmpty() bool {
@@ -28,7 +32,7 @@ func (me *XdrArray) IsEmpty() bool {
 }
 
 func (me *XdrArray) IsGood() bool {
-	return me.Offset > 0 && me.Size > 0
+	return me.Offset > 0 && me.Len > 0
 }
 
 func (me *XdrArray) HaveEntry() bool {
@@ -47,7 +51,7 @@ func (me *XdrReader) xdrArrayEntry(xdr *Xdr, obj *XdrArray, idx int) unsafe.Poin
 	if idx < int(obj.Count) {
 		body := me.xdrArrayBody(xdr, obj)
 		if nil != body {
-			offset := XdrAlign(int(obj.Size)) * idx
+			offset := XdrAlign(int(obj.Len)) * idx
 
 			return unsafe.Pointer(uintptr(body) + uintptr(offset))
 		}

@@ -1,125 +1,103 @@
 package libxdr
 
 import (
+	"reflect"
 	"testing"
 	"unsafe"
 )
 
+func sizeChecker(t *testing.T, csize int, osize uintptr, Type reflect.Type) {
+	if csize == int(osize) {
+		t.Logf("%s size == %d", Type.String(), csize)
+	} else {
+		t.Errorf("%s size != %d", Type.String(), csize)
+	}
+}
+
 func TestXdrArray(t *testing.T) {
 	obj := XdrArray{}
 
-	if SizeofXdrArray != unsafe.Sizeof(obj) {
-		t.Errorf("XdrArray size must %d", SizeofXdrArray)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrString(t *testing.T) {
 	obj := XdrString{}
 
-	if SizeofXdrString != unsafe.Sizeof(obj) {
-		t.Errorf("XdrString size must %d", SizeofXdrString)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrFile(t *testing.T) {
 	obj := XdrFile{}
 
-	if SizeofXdrFile != unsafe.Sizeof(obj) {
-		t.Errorf("XdrFile size must %d", SizeofXdrFile)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrCert(t *testing.T) {
 	obj := XdrCert{}
 
-	if SizeofXdrCert != unsafe.Sizeof(obj) {
-		t.Errorf("XdrCert size must %d", SizeofXdrCert)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrDns(t *testing.T) {
 	obj := XdrDns{}
 
-	if SizeofXdrDns != unsafe.Sizeof(obj) {
-		t.Errorf("XdrDns size must %d", SizeofXdrDns)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrFtp(t *testing.T) {
 	obj := XdrFtp{}
 
-	if SizeofXdrFtp != unsafe.Sizeof(obj) {
-		t.Errorf("XdrFtp size must %d", SizeofXdrFtp)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrHttp(t *testing.T) {
 	obj := XdrHttp{}
 
-	if SizeofXdrHttp != unsafe.Sizeof(obj) {
-		t.Errorf("XdrHttp size must %d", SizeofXdrHttp)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrL7(t *testing.T) {
 	obj := XdrL7{}
 
-	if SizeofXdrL7 != unsafe.Sizeof(obj) {
-		t.Errorf("XdrL7 size must %d", SizeofXdrL7)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrMail(t *testing.T) {
 	obj := XdrMail{}
 
-	if SizeofXdrMail != unsafe.Sizeof(obj) {
-		t.Errorf("XdrMail size must %d", SizeofXdrMail)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrRtsp(t *testing.T) {
 	obj := XdrRtsp{}
 
-	if SizeofXdrRtsp != unsafe.Sizeof(obj) {
-		t.Errorf("XdrRtsp size must %d", SizeofXdrRtsp)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrSession(t *testing.T) {
 	obj4 := XdrSession4{}
 	obj6 := XdrSession6{}
 
-	if SizeofXdrSession4 != unsafe.Sizeof(obj4) {
-		t.Errorf("XdrSession4 size must %d", SizeofXdrSession4)
-	}
-
-	if SizeofXdrSession6 != unsafe.Sizeof(obj6) {
-		t.Errorf("XdrSession6 size must %d", SizeofXdrSession6)
-	}
+	sizeChecker(t, obj4.Size(), unsafe.Sizeof(obj4), reflect.TypeOf(obj4))
+	sizeChecker(t, obj6.Size(), unsafe.Sizeof(obj6), reflect.TypeOf(obj6))
 }
 
 func TestXdrSip(t *testing.T) {
 	obj := XdrSip{}
 
-	if SizeofXdrSip != unsafe.Sizeof(obj) {
-		t.Errorf("XdrSip size must %d", SizeofXdrSip)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdrSsl(t *testing.T) {
 	obj := XdrSsl{}
 
-	if SizeofXdrSsl != unsafe.Sizeof(obj) {
-		t.Errorf("XdrSsl size must %d", SizeofXdrSsl)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestXdr(t *testing.T) {
 	obj := Xdr{}
 
-	if SizeofXdr != unsafe.Sizeof(obj) {
-		t.Errorf("Xdr size must %d", SizeofXdr)
-	}
+	sizeChecker(t, obj.Size(), unsafe.Sizeof(obj), reflect.TypeOf(obj))
 }
 
 func TestUnmap(t *testing.T) {
