@@ -146,6 +146,8 @@ func (me *XdrReader) dump(xdr *Xdr) {
 	if xdr.OffsetofL6 > 0 {
 
 	}
+
+	me.dumpL7(xdr, &xdr.L7, 1)
 }
 
 func (me *XdrReader) walk(xdr *Xdr, left uint32, walk XdrWalker) error {

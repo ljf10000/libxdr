@@ -44,7 +44,6 @@ func (me *XdrReader) dumpMail(xdr *Xdr, obj *XdrMail, tab int) {
 	dump(TabN(tab)+"sender:%s", string(me.MailSender(xdr, obj)))
 	dump(TabN(tab)+"recver:%s", string(me.MailRecver(xdr, obj)))
 	dump(TabN(tab)+"hdr:%s", string(me.MailHdr(xdr, obj)))
-
 }
 
 func (me *XdrReader) Mail(xdr *Xdr) *XdrMail {
