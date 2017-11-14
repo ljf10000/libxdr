@@ -11,3 +11,7 @@ type XdrL7 struct {
 	Class    byte
 	Protocol uint16
 }
+
+func (me *XdrL7) Size() int {
+	return SizeofXdrL7
+}

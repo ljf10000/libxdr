@@ -45,38 +45,42 @@ type XdrHttp struct {
 	Location    XdrString
 }
 
-func (me *XdrHandle) Http(xdr *Xdr) *XdrHttp {
+func (me *XdrHttp) Size() int {
+	return SizeofXdrHttp
+}
+
+func (me *XdrReader) Http(xdr *Xdr) *XdrHttp {
 	return (*XdrHttp)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrHandle) HttpHost(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpHost(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Host)
 }
 
-func (me *XdrHandle) HttpUrl(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpUrl(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Url)
 }
 
-func (me *XdrHandle) HttpHostXonline(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpHostXonline(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.HostXonline)
 }
 
-func (me *XdrHandle) HttpUserAgent(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpUserAgent(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.UserAgent)
 }
 
-func (me *XdrHandle) HttpContent(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpContent(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Content)
 }
 
-func (me *XdrHandle) HttpRefer(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpRefer(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Refer)
 }
 
-func (me *XdrHandle) HttpCookie(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpCookie(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Cookie)
 }
 
-func (me *XdrHandle) HttpLocation(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrReader) HttpLocation(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Location)
 }

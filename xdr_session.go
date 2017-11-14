@@ -16,6 +16,10 @@ type XdrSession struct {
 	Dport uint16
 }
 
+func (me *XdrSession) Size() int {
+	return SizeofXdrSession
+}
+
 const SizeofXdrSession4 = SizeofXdrSession + 2*SizeofInt32
 
 type XdrSession4 struct {
@@ -23,6 +27,10 @@ type XdrSession4 struct {
 
 	Sip uint32
 	Dip uint32
+}
+
+func (me *XdrSession4) Size() int {
+	return SizeofXdrSession4
 }
 
 const SizeofXdrSession6 = SizeofXdrSession + 2*16
@@ -34,10 +42,14 @@ type XdrSession6 struct {
 	Dip [16]byte
 }
 
-func (me *XdrHandle) Session4(xdr *Xdr) *XdrSession4 {
+func (me *XdrSession6) Size() int {
+	return SizeofXdrSession6
+}
+
+func (me *XdrReader) Session4(xdr *Xdr) *XdrSession4 {
 	return (*XdrSession4)(me.xdrMember(xdr, xdr.OffsetofSession))
 }
 
-func (me *XdrHandle) Session6(xdr *Xdr) *XdrSession6 {
+func (me *XdrReader) Session6(xdr *Xdr) *XdrSession6 {
 	return (*XdrSession6)(me.xdrMember(xdr, xdr.OffsetofSession))
 }

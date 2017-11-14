@@ -13,7 +13,7 @@ type XdrString struct {
 
 type XdrBinary = XdrString
 
-func (me *XdrHandle) xdrString(xdr *Xdr, xstr XdrString) []byte {
+func (me *XdrReader) xdrString(xdr *Xdr, xstr XdrString) []byte {
 	if 0 == xstr.Size || 0 == xstr.Offset {
 		return nil
 	}

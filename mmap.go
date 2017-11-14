@@ -8,7 +8,7 @@ import (
 	mgo "github.com/edsrzf/mmap-go"
 )
 
-type mmap struct {
+type XdrReader struct {
 	filename string
 	f        *os.File
 	mm       mgo.MMap
@@ -16,7 +16,7 @@ type mmap struct {
 	size     uint32
 }
 
-func (me *mmap) open(filename string) error {
+func (me *XdrReader) open(filename string) error {
 	f, err := os.Open(filename)
 	if nil != err {
 		return err
@@ -38,7 +38,7 @@ func (me *mmap) open(filename string) error {
 	return nil
 }
 
-func (me *mmap) close() {
+func (me *XdrReader) close() {
 	if len(me.mm) > 0 {
 		me.mm.Unmap()
 	}
@@ -48,10 +48,10 @@ func (me *mmap) close() {
 	}
 }
 
-func (me *mmap) object(offset XdrOffset) unsafe.Pointer {
+func (me *XdrReader) object(offset XdrOffset) unsafe.Pointer {
 	return unsafe.Pointer(uintptr(me.addr) + uintptr(offset))
 }
 
-func (me *mmap) offset(obj unsafe.Pointer) XdrOffset {
+func (me *XdrReader) offset(obj unsafe.Pointer) XdrOffset {
 	return XdrOffset(uintptr(obj) - uintptr(me.addr))
 }

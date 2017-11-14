@@ -20,18 +20,22 @@ type XdrSip struct {
 	SessionId     XdrString
 }
 
-func (me *XdrHandle) Sip(xdr *Xdr) *XdrSip {
+func (me *XdrSip) Size() int {
+	return SizeofXdrSip
+}
+
+func (me *XdrReader) Sip(xdr *Xdr) *XdrSip {
 	return (*XdrSip)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrHandle) SipCallingNumber(xdr *Xdr, obj *XdrSip) []byte {
+func (me *XdrReader) SipCallingNumber(xdr *Xdr, obj *XdrSip) []byte {
 	return me.xdrString(xdr, obj.CallingNumber)
 }
 
-func (me *XdrHandle) SipCalledNumber(xdr *Xdr, obj *XdrSip) []byte {
+func (me *XdrReader) SipCalledNumber(xdr *Xdr, obj *XdrSip) []byte {
 	return me.xdrString(xdr, obj.CalledNumber)
 }
 
-func (me *XdrHandle) SipSessionId(xdr *Xdr, obj *XdrSip) []byte {
+func (me *XdrReader) SipSessionId(xdr *Xdr, obj *XdrSip) []byte {
 	return me.xdrString(xdr, obj.SessionId)
 }

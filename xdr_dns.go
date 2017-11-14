@@ -10,8 +10,8 @@ const (
 
 const SizeofXdrDns = 8*SizeofByte +
 	2*SizeofInt32 +
-	SizeofXdrArray +
-	SizeofXdrString
+	1*SizeofXdrArray +
+	1*SizeofXdrString
 
 type XdrDns struct {
 	V            byte
@@ -31,9 +31,14 @@ type XdrDns struct {
 	 *       ip4 is the ip address
 	 *       the ip array is not used
 	 */
-	Ip4    XdrIp4Addr
+	Ip4 XdrIp4Addr
+
 	Ip     XdrArray // ip4
 	Domain XdrString
+}
+
+func (me *XdrDns) Size() int {
+	return SizeofXdrDns
 }
 
 func (me *XdrDns) IsIp4() bool {
@@ -52,15 +57,15 @@ func (me *XdrDns) HaveIp6Addrs() bool {
 	return me.IsIp6() && me.IpCount > 0
 }
 
-func (me *XdrHandle) Dns(xdr *Xdr) *XdrDns {
+func (me *XdrReader) Dns(xdr *Xdr) *XdrDns {
 	return (*XdrDns)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrHandle) DnsDomain(xdr *Xdr, obj *XdrDns) []byte {
+func (me *XdrReader) DnsDomain(xdr *Xdr, obj *XdrDns) []byte {
 	return me.xdrString(xdr, obj.Domain)
 }
 
-func (me *XdrHandle) DnsIp4(xdr *Xdr, obj *XdrDns, idx int) XdrIp4Addr {
+func (me *XdrReader) DnsIp4(xdr *Xdr, obj *XdrDns, idx int) XdrIp4Addr {
 	entry := me.xdrArrayEntry(xdr, &obj.Ip, idx)
 	if nil != entry {
 		return *(*XdrIp4Addr)(entry)
@@ -69,7 +74,7 @@ func (me *XdrHandle) DnsIp4(xdr *Xdr, obj *XdrDns, idx int) XdrIp4Addr {
 	}
 }
 
-func (me *XdrHandle) DnsIp6(xdr *Xdr, obj *XdrDns, idx int) XdrIp6Addr {
+func (me *XdrReader) DnsIp6(xdr *Xdr, obj *XdrDns, idx int) XdrIp6Addr {
 	entry := me.xdrArrayEntry(xdr, &obj.Ip, idx)
 	if nil != entry {
 		return XdrIp6Addr(ObjToSlice(entry, int(obj.Ip.Size)))

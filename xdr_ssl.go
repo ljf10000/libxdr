@@ -30,6 +30,10 @@ type XdrCert struct {
 	CommonName           XdrString
 }
 
+func (me *XdrCert) Size() int {
+	return SizeofXdrCert
+}
+
 const SizeofXdrSsl = 4*SizeofByte + 2*SizeofXdrArray
 
 type XdrSsl struct {
@@ -42,20 +46,24 @@ type XdrSsl struct {
 	CertClient XdrArray // xdrCert
 }
 
-func (me *XdrHandle) Ssl(xdr *Xdr) *XdrSsl {
+func (me *XdrSsl) Size() int {
+	return SizeofXdrSsl
+}
+
+func (me *XdrReader) Ssl(xdr *Xdr) *XdrSsl {
 	return (*XdrSsl)(me.xdrMember(xdr, xdr.OffsetofL6))
 }
 
-func (me *XdrHandle) sslCert(xdr *Xdr, obj *XdrArray, idx int) *XdrCert {
+func (me *XdrReader) sslCert(xdr *Xdr, obj *XdrArray, idx int) *XdrCert {
 	entry := me.xdrArrayEntry(xdr, obj, idx)
 
 	return (*XdrCert)(entry)
 }
 
-func (me *XdrHandle) SslServerCert(xdr *Xdr, obj *XdrSsl, idx int) *XdrCert {
+func (me *XdrReader) SslServerCert(xdr *Xdr, obj *XdrSsl, idx int) *XdrCert {
 	return me.sslCert(xdr, &obj.CertServer, idx)
 }
 
-func (me *XdrHandle) SslClientCert(xdr *Xdr, obj *XdrSsl, idx int) *XdrCert {
+func (me *XdrReader) SslClientCert(xdr *Xdr, obj *XdrSsl, idx int) *XdrCert {
 	return me.sslCert(xdr, &obj.CertClient, idx)
 }

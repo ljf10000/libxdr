@@ -35,7 +35,7 @@ func (me *XdrArray) HaveEntry() bool {
 	return me.IsGood() && !me.IsEmpty()
 }
 
-func (me *XdrHandle) xdrArrayBody(xdr *Xdr, obj *XdrArray) unsafe.Pointer {
+func (me *XdrReader) xdrArrayBody(xdr *Xdr, obj *XdrArray) unsafe.Pointer {
 	if obj.HaveEntry() {
 		return me.xdrMember(xdr, obj.Offset)
 	} else {
@@ -43,7 +43,7 @@ func (me *XdrHandle) xdrArrayBody(xdr *Xdr, obj *XdrArray) unsafe.Pointer {
 	}
 }
 
-func (me *XdrHandle) xdrArrayEntry(xdr *Xdr, obj *XdrArray, idx int) unsafe.Pointer {
+func (me *XdrReader) xdrArrayEntry(xdr *Xdr, obj *XdrArray, idx int) unsafe.Pointer {
 	if idx < int(obj.Count) {
 		body := me.xdrArrayBody(xdr, obj)
 		if nil != body {

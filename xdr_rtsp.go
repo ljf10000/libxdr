@@ -23,18 +23,22 @@ type XdrRtsp struct {
 	ServerIp  XdrString
 }
 
-func (me *XdrHandle) Rtsp(xdr *Xdr) *XdrRtsp {
+func (me *XdrRtsp) Size() int {
+	return SizeofXdrRtsp
+}
+
+func (me *XdrReader) Rtsp(xdr *Xdr) *XdrRtsp {
 	return (*XdrRtsp)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrHandle) RtspUrl(xdr *Xdr, obj *XdrRtsp) []byte {
+func (me *XdrReader) RtspUrl(xdr *Xdr, obj *XdrRtsp) []byte {
 	return me.xdrString(xdr, obj.Url)
 }
 
-func (me *XdrHandle) RtspUserAgent(xdr *Xdr, obj *XdrRtsp) []byte {
+func (me *XdrReader) RtspUserAgent(xdr *Xdr, obj *XdrRtsp) []byte {
 	return me.xdrString(xdr, obj.UserAgent)
 }
 
-func (me *XdrHandle) RtspServerIp(xdr *Xdr, obj *XdrRtsp) []byte {
+func (me *XdrReader) RtspServerIp(xdr *Xdr, obj *XdrRtsp) []byte {
 	return me.xdrString(xdr, obj.ServerIp)
 }

@@ -49,8 +49,8 @@ type Xdr struct {
 
 	Appid        byte
 	IpProto      byte
-	SessionState byte
 	IpVersion    byte
+	SessionState byte
 
 	SessionTimeCreate uint64
 	SessionTimeStart  uint64
@@ -63,22 +63,48 @@ type Xdr struct {
 	Flag                uint32 // XDR_F_XXX
 	Total               uint32 // total size
 	FirstResponseDelay  uint32
-	OffsetofSession     XdrOffset
-	OffsetofSessionSt   XdrOffset
-	OffsetofServiceSt   XdrOffset
-	OffsetofAlert       XdrOffset
-	OffsetofFileContent XdrOffset // xdr_file_t
 	OffsetofL4          XdrOffset // tcp
 	OffsetofL5          XdrOffset // http/sip/rtsp/ftp/mail/dns
 	OffsetofL6          XdrOffset // ssl
+	OffsetofSession     XdrOffset
+	OffsetofSessionSt   XdrOffset
+	OffsetofServiceSt   XdrOffset
+	OffsetofFileContent XdrOffset // xdr_file_t
+	OffsetofAlert       XdrOffset
 	_                   XdrOffset // padding for align 8
 }
 
-type XdrHandle = mmap
+func (me *Xdr) Size() int {
+	return SizeofXdr
+}
 
-type XdrWalker func(mm *XdrHandle, xdrs *Xdr) error
+func (me *XdrReader) dump(xdr *Xdr) {
+	dump("xdr header:")
+	dump(Tab+"version:%d", xdr.Version)
+	dump(Tab+"total:%d", xdr.Total)
+	dump(Tab+"appid:%d", xdr.Appid)
+	dump(Tab+"ip-proto:%d", xdr.IpProto)
+	dump(Tab+"ip-version:%d", xdr.SessionState)
+	dump(Tab+"session-state:%d", xdr.SessionState)
+	dump(Tab+"session-time-create:%d", xdr.SessionTimeCreate)
+	dump(Tab+"session-time-start:%d", xdr.SessionTimeStart)
+	dump(Tab+"session-time-stop:%d", xdr.SessionTimeStop)
+	dump(Tab+"bkdr:0x%x", xdr.Bkdr)
+	dump(Tab+"time:%d", xdr.Time)
+	dump(Tab+"seq:%d", xdr.Seq)
+	dump(Tab+"flag:%d", xdr.Flag)
+	dump(Tab+"frist-response-delay:%d", xdr.FirstResponseDelay)
+	dump(Tab+"offsetof-session:%d", xdr.OffsetofSession)
+	dump(Tab+"offsetof-session-st:%d", xdr.OffsetofSessionSt)
+	dump(Tab+"offsetof-service-st:%d", xdr.OffsetofServiceSt)
+	dump(Tab+"offsetof-allert:%d", xdr.OffsetofAlert)
+	dump(Tab+"offsetof-file-content:%d", xdr.OffsetofFileContent)
+	dump(Tab+"offsetof-L4:%d", xdr.OffsetofL4)
+	dump(Tab+"offsetof-L5:%d", xdr.OffsetofL5)
+	dump(Tab+"offsetof-L6:%d", xdr.OffsetofL6)
+}
 
-func (me *XdrHandle) walk(xdr *Xdr, left uint32, walk XdrWalker) error {
+func (me *XdrReader) walk(xdr *Xdr, left uint32, walk XdrWalker) error {
 	for left > 0 {
 		if xdr.Total < SizeofXdr {
 			return ErrBadProto
@@ -100,36 +126,19 @@ func (me *XdrHandle) walk(xdr *Xdr, left uint32, walk XdrWalker) error {
 	return nil
 }
 
-func (me *XdrHandle) check(xdr *Xdr, left uint32) error {
+func (me *XdrReader) check(xdr *Xdr, left uint32) error {
 	return me.walk(xdr, left, nil)
 }
 
-func (me *XdrHandle) Walk(filename string, walk XdrWalker) error {
-	err := me.open(filename)
-	if nil != err {
-		return err
-	}
-	defer me.close()
-
-	xdr := (*Xdr)(me.addr)
-	left := me.size
-
-	if err := me.check(xdr, left); nil != err {
-		return err
-	}
-
-	return me.walk(xdr, left, walk)
-}
-
-func (me *XdrHandle) xdrNext(xdr *Xdr) *Xdr {
+func (me *XdrReader) xdrNext(xdr *Xdr) *Xdr {
 	return (*Xdr)(me.object(me.xdrOffset(xdr) + XdrOffset(xdr.Total)))
 }
 
-func (me *XdrHandle) xdrOffset(xdr *Xdr) XdrOffset {
+func (me *XdrReader) xdrOffset(xdr *Xdr) XdrOffset {
 	return me.offset(unsafe.Pointer(xdr))
 }
 
-func (me *XdrHandle) xdrMember(xdr *Xdr, offset XdrOffset) unsafe.Pointer {
+func (me *XdrReader) xdrMember(xdr *Xdr, offset XdrOffset) unsafe.Pointer {
 	if offset > 0 {
 		return me.object(me.xdrOffset(xdr) + offset)
 	} else {

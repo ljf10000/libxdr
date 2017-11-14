@@ -26,26 +26,30 @@ type XdrMail struct {
 	Hdr    XdrString
 }
 
-func (me *XdrHandle) Mail(xdr *Xdr) *XdrMail {
+func (me *XdrMail) Size() int {
+	return SizeofXdrMail
+}
+
+func (me *XdrReader) Mail(xdr *Xdr) *XdrMail {
 	return (*XdrMail)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrHandle) MailUser(xdr *Xdr, obj *XdrMail) []byte {
+func (me *XdrReader) MailUser(xdr *Xdr, obj *XdrMail) []byte {
 	return me.xdrString(xdr, obj.User)
 }
 
-func (me *XdrHandle) MailDomain(xdr *Xdr, obj *XdrMail) []byte {
+func (me *XdrReader) MailDomain(xdr *Xdr, obj *XdrMail) []byte {
 	return me.xdrString(xdr, obj.Domain)
 }
 
-func (me *XdrHandle) MailSender(xdr *Xdr, obj *XdrMail) []byte {
+func (me *XdrReader) MailSender(xdr *Xdr, obj *XdrMail) []byte {
 	return me.xdrString(xdr, obj.Sender)
 }
 
-func (me *XdrHandle) MailRecver(xdr *Xdr, obj *XdrMail) []byte {
+func (me *XdrReader) MailRecver(xdr *Xdr, obj *XdrMail) []byte {
 	return me.xdrString(xdr, obj.Recver)
 }
 
-func (me *XdrHandle) MailHdr(xdr *Xdr, obj *XdrMail) []byte {
+func (me *XdrReader) MailHdr(xdr *Xdr, obj *XdrMail) []byte {
 	return me.xdrString(xdr, obj.Hdr)
 }
