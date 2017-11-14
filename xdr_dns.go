@@ -1,19 +1,28 @@
 package libxdr
 
+import (
+	. "asdf"
+)
+
 const (
 	DnsIp4 = 0
 )
 
+const SizeofXdrDns = 8*SizeofByte +
+	2*SizeofInt32 +
+	SizeofXdrArray +
+	SizeofXdrString
+
 type XdrDns struct {
-	ResponseCode        byte
+	V            byte
+	IpVersion    byte // 0: ipv4
+	IpCount      byte
+	ResponseCode byte
+
 	CountRequest        byte
 	CountResponseRecord byte
 	CountResponseAuth   byte
-
-	CountResponseExtra byte
-	IpVersion          byte // 0: ipv4
-	IpCount            byte
-	_                  byte
+	CountResponseExtra  byte
 
 	Delay uint32
 	/*
@@ -31,53 +40,40 @@ func (me *XdrDns) IsIp4() bool {
 	return DnsIp4 == me.IpVersion
 }
 
-func (me *XdrMemFile) Dns(xdr *Xdr) *XdrDns {
-	return (*XdrDns)(me.xdrObject(xdr, xdr.OffsetofL5))
+func (me *XdrDns) IsIp6() bool {
+	return DnsIp4 != me.IpVersion
 }
 
-func (me *XdrMemFile) DnsDomain(xdr *Xdr, obj *XdrDns) []byte {
+func (me *XdrDns) HaveIp4Addrs() bool {
+	return me.IsIp4() && me.IpCount > 1
+}
+
+func (me *XdrDns) HaveIp6Addrs() bool {
+	return me.IsIp6() && me.IpCount > 0
+}
+
+func (me *XdrHandle) Dns(xdr *Xdr) *XdrDns {
+	return (*XdrDns)(me.xdrMember(xdr, xdr.OffsetofL5))
+}
+
+func (me *XdrHandle) DnsDomain(xdr *Xdr, obj *XdrDns) []byte {
 	return me.xdrString(xdr, obj.Domain)
 }
 
-// safe, needn't copy
-func (me *XdrMemFile) DnsIp4(xdr *Xdr, obj *XdrDns) []XdrIp4Addr {
-	if !obj.IsIp4() || obj.IpCount < 2 {
-		return nil
+func (me *XdrHandle) DnsIp4(xdr *Xdr, obj *XdrDns, idx int) XdrIp4Addr {
+	entry := me.xdrArrayEntry(xdr, &obj.Ip, idx)
+	if nil != entry {
+		return *(*XdrIp4Addr)(entry)
+	} else {
+		return 0
 	}
-
-	body := me.xdrArrayBody(xdr, obj.Ip)
-	if nil == body {
-		return nil
-	}
-
-	count := int(obj.IpCount)
-	addrs := make([]XdrIp4Addr, 0, count)
-	for i := 0; i < count; i++ {
-		entry := me.xdrArrayEntry(xdr, body, int(obj.Ip.Size), i)
-		addrs = append(addrs, *(*XdrIp4Addr)(entry))
-	}
-
-	return addrs
 }
 
-// safe, needn't copy
-func (me *XdrMemFile) DnsIp6(xdr *Xdr, obj *XdrDns) []XdrIp6Addr {
-	if obj.IsIp4() || obj.IpCount < 1 {
+func (me *XdrHandle) DnsIp6(xdr *Xdr, obj *XdrDns, idx int) XdrIp6Addr {
+	entry := me.xdrArrayEntry(xdr, &obj.Ip, idx)
+	if nil != entry {
+		return XdrIp6Addr(ObjToSlice(entry, int(obj.Ip.Size)))
+	} else {
 		return nil
 	}
-
-	body := me.xdrArrayBody(xdr, obj.Ip)
-	if nil == body {
-		return nil
-	}
-
-	count := int(obj.IpCount)
-	addrs := make([]XdrIp6Addr, 0, count)
-	for i := 0; i < count; i++ {
-		addr := me.xdrArrayEntrySlice(xdr, body, int(obj.Ip.Size), i)
-
-		addrs = append(addrs, XdrIp6Addr(addr))
-	}
-
-	return addrs
 }

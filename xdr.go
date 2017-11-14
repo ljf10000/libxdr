@@ -36,6 +36,11 @@ type XdrOffset uint32
 type XdrIp4Addr uint32
 type XdrIp6Addr []byte
 
+const SizeofXdr = 8*SizeofByte +
+	3*SizeofInt64 +
+	1*SizeofXdrL7 +
+	15*SizeofInt32
+
 type Xdr struct {
 	Version byte
 	_       byte
@@ -47,61 +52,84 @@ type Xdr struct {
 	SessionState byte
 	IpVersion    byte
 
-	Bkdr               Bkdr
-	Time               uint32
-	Seq                uint32
-	Flag               uint32 // XDR_F_XXX
-	Total              uint32 // total size
-	FirstResponseDelay uint32
-
 	SessionTimeCreate uint64
 	SessionTimeStart  uint64
 	SessionTimeStop   uint64
 
+	L7                  XdrL7
+	Bkdr                Bkdr   // session bkdr
+	Time                uint32 // time of analysis xdr
+	Seq                 uint32
+	Flag                uint32 // XDR_F_XXX
+	Total               uint32 // total size
+	FirstResponseDelay  uint32
 	OffsetofSession     XdrOffset
 	OffsetofSessionSt   XdrOffset
 	OffsetofServiceSt   XdrOffset
 	OffsetofAlert       XdrOffset
 	OffsetofFileContent XdrOffset // xdr_file_t
-
-	OffsetofL4 XdrOffset // tcp
-	OffsetofL5 XdrOffset // http/sip/rtsp/ftp/mail/dns
-	OffsetofL6 XdrOffset // ssl
-
-	L7 XdrL7
+	OffsetofL4          XdrOffset // tcp
+	OffsetofL5          XdrOffset // http/sip/rtsp/ftp/mail/dns
+	OffsetofL6          XdrOffset // ssl
+	_                   XdrOffset // padding for align 8
 }
 
-type XdrMemFile = mmap
+type XdrHandle = mmap
 
-type XdrWalker func(mm *XdrMemFile, xdrs *Xdr) error
+type XdrWalker func(mm *XdrHandle, xdrs *Xdr) error
 
-func (me *XdrMemFile) Walk(filename string, walk XdrWalker) error {
+func (me *XdrHandle) walk(xdr *Xdr, left uint32, walk XdrWalker) error {
+	for left > 0 {
+		if xdr.Total < SizeofXdr {
+			return ErrBadProto
+		} else if left < xdr.Total {
+			return ErrTooShortBuffer
+		}
+
+		if nil != walk {
+			err := walk(me, xdr)
+			if nil != err {
+				return err
+			}
+		}
+
+		left -= xdr.Total
+		xdr = me.xdrNext(xdr)
+	}
+
+	return nil
+}
+
+func (me *XdrHandle) check(xdr *Xdr, left uint32) error {
+	return me.walk(xdr, left, nil)
+}
+
+func (me *XdrHandle) Walk(filename string, walk XdrWalker) error {
 	err := me.open(filename)
 	if nil != err {
 		return err
 	}
 	defer me.close()
 
-	var xdr *Xdr
-
+	xdr := (*Xdr)(me.addr)
 	left := me.size
-	for left > 0 {
-		xdr = (*Xdr)(me.addr)
 
-		err = walk(me, xdr)
-		if nil != err {
-			return err
-		}
+	if err := me.check(xdr, left); nil != err {
+		return err
 	}
 
-	return nil
+	return me.walk(xdr, left, walk)
 }
 
-func (me *XdrMemFile) xdrOffset(xdr *Xdr) XdrOffset {
+func (me *XdrHandle) xdrNext(xdr *Xdr) *Xdr {
+	return (*Xdr)(me.object(me.xdrOffset(xdr) + XdrOffset(xdr.Total)))
+}
+
+func (me *XdrHandle) xdrOffset(xdr *Xdr) XdrOffset {
 	return me.offset(unsafe.Pointer(xdr))
 }
 
-func (me *XdrMemFile) xdrObject(xdr *Xdr, offset XdrOffset) unsafe.Pointer {
+func (me *XdrHandle) xdrMember(xdr *Xdr, offset XdrOffset) unsafe.Pointer {
 	if offset > 0 {
 		return me.object(me.xdrOffset(xdr) + offset)
 	} else {

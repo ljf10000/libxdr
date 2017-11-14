@@ -1,5 +1,16 @@
 package libxdr
 
+import (
+	. "asdf"
+)
+
+const SizeofXdrHttp = 4*SizeofInt64 +
+	1*SizeofInt32 +
+	1*SizeofInt16 +
+	10*SizeofByte +
+	2*SizeofInt32 +
+	8*SizeofXdrString
+
 type XdrHttp struct {
 	TimeRequest       uint64
 	TimeFirstResponse uint64
@@ -16,6 +27,11 @@ type XdrHttp struct {
 	Portal byte
 	_      byte
 
+	V byte
+	_ byte
+	_ byte
+	_ byte
+
 	OffsetofRequest  uint32
 	OffsetofResponse uint32
 
@@ -29,38 +45,38 @@ type XdrHttp struct {
 	Location    XdrString
 }
 
-func (me *XdrMemFile) Http(xdr *Xdr) *XdrHttp {
-	return (*XdrHttp)(me.xdrObject(xdr, xdr.OffsetofL5))
+func (me *XdrHandle) Http(xdr *Xdr) *XdrHttp {
+	return (*XdrHttp)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrMemFile) HttpHost(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpHost(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Host)
 }
 
-func (me *XdrMemFile) HttpUrl(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpUrl(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Url)
 }
 
-func (me *XdrMemFile) HttpHostXonline(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpHostXonline(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.HostXonline)
 }
 
-func (me *XdrMemFile) HttpUserAgent(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpUserAgent(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.UserAgent)
 }
 
-func (me *XdrMemFile) HttpContent(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpContent(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Content)
 }
 
-func (me *XdrMemFile) HttpRefer(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpRefer(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Refer)
 }
 
-func (me *XdrMemFile) HttpCookie(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpCookie(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Cookie)
 }
 
-func (me *XdrMemFile) HttpLocation(xdr *Xdr, obj *XdrHttp) []byte {
+func (me *XdrHandle) HttpLocation(xdr *Xdr, obj *XdrHttp) []byte {
 	return me.xdrString(xdr, obj.Location)
 }

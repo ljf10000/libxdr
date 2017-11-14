@@ -1,11 +1,23 @@
 package libxdr
 
+import (
+	. "asdf"
+)
+
+const SizeofXdrCert = SizeofXdrFile +
+	2*SizeofByte +
+	1*SizeofInt16 +
+	1*SizeofPad4 +
+	2*SizeofInt64 +
+	6*SizeofXdrString
+
 type XdrCert struct {
 	File XdrFile
 
+	V        byte
 	Version  byte
-	_        byte
 	KeyUsage uint16
+	_        Pad4
 
 	NotBefore uint64
 	NotAfter  uint64
@@ -18,54 +30,32 @@ type XdrCert struct {
 	CommonName           XdrString
 }
 
-type XdrSsl struct {
-	Reason         byte
-	Verfy          byte
-	VerfyFailedIdx byte
-	_              byte
+const SizeofXdrSsl = 4*SizeofByte + 2*SizeofXdrArray
 
-	VerfyFailedDesc XdrString
+type XdrSsl struct {
+	V      byte
+	Reason byte
+	_      byte
+	_      byte
 
 	CertServer XdrArray // xdrCert
 	CertClient XdrArray // xdrCert
 }
 
-func (me *XdrMemFile) Ssl(xdr *Xdr) *XdrSsl {
-	return (*XdrSsl)(me.xdrObject(xdr, xdr.OffsetofL6))
+func (me *XdrHandle) Ssl(xdr *Xdr) *XdrSsl {
+	return (*XdrSsl)(me.xdrMember(xdr, xdr.OffsetofL6))
 }
 
-func (me *XdrMemFile) SslVerfyFailedDesc(xdr *Xdr, obj *XdrSsl) []byte {
-	return me.xdrString(xdr, obj.VerfyFailedDesc)
+func (me *XdrHandle) sslCert(xdr *Xdr, obj *XdrArray, idx int) *XdrCert {
+	entry := me.xdrArrayEntry(xdr, obj, idx)
+
+	return (*XdrCert)(entry)
 }
 
-func (me *XdrMemFile) sslCerts(xdr *Xdr, obj XdrArray) []*XdrCert {
-	if 0 == obj.Count || 0 == obj.Offset || 0 == obj.Size {
-		return nil
-	}
-
-	body := me.xdrArrayBody(xdr, obj)
-	if nil == body {
-		return nil
-	}
-
-	count := int(obj.Count)
-	certs := make([]*XdrCert, 0, count)
-	for i := 0; i < count; i++ {
-		entry := me.xdrArrayEntry(xdr, body, int(obj.Size), i)
-		cert := *(*XdrCert)(entry)
-
-		certs = append(certs, &cert)
-	}
-
-	return certs
+func (me *XdrHandle) SslServerCert(xdr *Xdr, obj *XdrSsl, idx int) *XdrCert {
+	return me.sslCert(xdr, &obj.CertServer, idx)
 }
 
-// safe, needn't copy
-func (me *XdrMemFile) SslServerCerts(xdr *Xdr, obj *XdrSsl) []*XdrCert {
-	return me.sslCerts(xdr, obj.CertServer)
-}
-
-// safe, needn't copy
-func (me *XdrMemFile) SslClientCerts(xdr *Xdr, obj *XdrSsl) []*XdrCert {
-	return me.sslCerts(xdr, obj.CertClient)
+func (me *XdrHandle) SslClientCert(xdr *Xdr, obj *XdrSsl, idx int) *XdrCert {
+	return me.sslCert(xdr, &obj.CertClient, idx)
 }

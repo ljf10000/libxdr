@@ -13,30 +13,45 @@ const (
 	XDR_ARRAY_END    = 4
 )
 
+const SizeofXdrArray = 2*SizeofByte + SizeofInt16 + 2*SizeofInt32
+
 type XdrArray struct {
+	V      byte
+	Type   byte
+	Count  uint16
 	Size   uint32
 	Offset XdrOffset
-	Count  uint16
-	Type   byte
-	_      byte
 }
 
-func (me *XdrMemFile) xdrArrayBody(xdr *Xdr, obj XdrArray) unsafe.Pointer {
-	if obj.Offset > 0 && obj.Size > 0 && obj.Count > 0 {
-		return me.xdrObject(xdr, obj.Offset)
+func (me *XdrArray) IsEmpty() bool {
+	return 0 == me.Count
+}
+
+func (me *XdrArray) IsGood() bool {
+	return me.Offset > 0 && me.Size > 0
+}
+
+func (me *XdrArray) HaveEntry() bool {
+	return me.IsGood() && !me.IsEmpty()
+}
+
+func (me *XdrHandle) xdrArrayBody(xdr *Xdr, obj *XdrArray) unsafe.Pointer {
+	if obj.HaveEntry() {
+		return me.xdrMember(xdr, obj.Offset)
 	} else {
 		return nil
 	}
 }
 
-func (me *XdrMemFile) xdrArrayEntry(xdr *Xdr, body unsafe.Pointer, size, idx int) unsafe.Pointer {
-	offset := XdrAlign(size) * idx
+func (me *XdrHandle) xdrArrayEntry(xdr *Xdr, obj *XdrArray, idx int) unsafe.Pointer {
+	if idx < int(obj.Count) {
+		body := me.xdrArrayBody(xdr, obj)
+		if nil != body {
+			offset := XdrAlign(int(obj.Size)) * idx
 
-	return unsafe.Pointer(uintptr(body) + uintptr(offset))
-}
+			return unsafe.Pointer(uintptr(body) + uintptr(offset))
+		}
+	}
 
-func (me *XdrMemFile) xdrArrayEntrySlice(xdr *Xdr, body unsafe.Pointer, size, idx int) []byte {
-	entry := me.xdrArrayEntry(xdr, body, size, idx)
-
-	return PointerToSlice(entry, size, size)
+	return nil
 }

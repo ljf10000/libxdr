@@ -1,5 +1,11 @@
 package libxdr
 
+import (
+	. "asdf"
+)
+
+const SizeofXdrSip = 4*SizeofByte + 2*SizeofInt16 + 3*SizeofXdrString
+
 type XdrSip struct {
 	CallDirection byte
 	CallType      byte
@@ -14,18 +20,18 @@ type XdrSip struct {
 	SessionId     XdrString
 }
 
-func (me *XdrMemFile) Sip(xdr *Xdr) *XdrSip {
-	return (*XdrSip)(me.xdrObject(xdr, xdr.OffsetofL5))
+func (me *XdrHandle) Sip(xdr *Xdr) *XdrSip {
+	return (*XdrSip)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrMemFile) SipCallingNumber(xdr *Xdr, obj *XdrSip) []byte {
+func (me *XdrHandle) SipCallingNumber(xdr *Xdr, obj *XdrSip) []byte {
 	return me.xdrString(xdr, obj.CallingNumber)
 }
 
-func (me *XdrMemFile) SipCalledNumber(xdr *Xdr, obj *XdrSip) []byte {
+func (me *XdrHandle) SipCalledNumber(xdr *Xdr, obj *XdrSip) []byte {
 	return me.xdrString(xdr, obj.CalledNumber)
 }
 
-func (me *XdrMemFile) SipSessionId(xdr *Xdr, obj *XdrSip) []byte {
+func (me *XdrHandle) SipSessionId(xdr *Xdr, obj *XdrSip) []byte {
 	return me.xdrString(xdr, obj.SessionId)
 }

@@ -1,5 +1,13 @@
 package libxdr
 
+import (
+	. "asdf"
+)
+
+const SizeofXdrRtsp = 6*SizeofInt16 +
+	1*SizeofInt32 +
+	3*SizeofXdrString
+
 type XdrRtsp struct {
 	PortClientStart uint16
 	PortClientEnd   uint16
@@ -15,18 +23,18 @@ type XdrRtsp struct {
 	ServerIp  XdrString
 }
 
-func (me *XdrMemFile) Rtsp(xdr *Xdr) *XdrRtsp {
-	return (*XdrRtsp)(me.xdrObject(xdr, xdr.OffsetofL5))
+func (me *XdrHandle) Rtsp(xdr *Xdr) *XdrRtsp {
+	return (*XdrRtsp)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
 
-func (me *XdrMemFile) RtspUrl(xdr *Xdr, obj *XdrRtsp) []byte {
+func (me *XdrHandle) RtspUrl(xdr *Xdr, obj *XdrRtsp) []byte {
 	return me.xdrString(xdr, obj.Url)
 }
 
-func (me *XdrMemFile) RtspUserAgent(xdr *Xdr, obj *XdrRtsp) []byte {
+func (me *XdrHandle) RtspUserAgent(xdr *Xdr, obj *XdrRtsp) []byte {
 	return me.xdrString(xdr, obj.UserAgent)
 }
 
-func (me *XdrMemFile) RtspServerIp(xdr *Xdr, obj *XdrRtsp) []byte {
+func (me *XdrHandle) RtspServerIp(xdr *Xdr, obj *XdrRtsp) []byte {
 	return me.xdrString(xdr, obj.ServerIp)
 }
