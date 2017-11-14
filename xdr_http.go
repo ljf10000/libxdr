@@ -32,8 +32,8 @@ type XdrHttp struct {
 	_ byte
 	_ byte
 
-	OffsetofRequest  uint32
-	OffsetofResponse uint32
+	OffsetofRequest  XdrOffset
+	OffsetofResponse XdrOffset
 
 	Host        XdrString
 	Url         XdrString
@@ -75,16 +75,30 @@ func (me *XdrReader) dumpHttp(xdr *Xdr, obj *XdrHttp, tab int) {
 	dump(TabN(tab)+"location:%s", string(me.HttpLocation(xdr, obj)))
 
 	if obj.OffsetofRequest > 0 {
+		file := me.HttpRequest(xdr, obj)
 
+		dump(TabN(tab) + "request:")
+		me.dumpXdrFile(xdr, file, 1+tab)
 	}
 
 	if obj.OffsetofResponse > 0 {
+		file := me.HttpResponse(xdr, obj)
 
+		dump(TabN(tab) + "response:")
+		me.dumpXdrFile(xdr, file, 1+tab)
 	}
 }
 
 func (me *XdrReader) Http(xdr *Xdr) *XdrHttp {
 	return (*XdrHttp)(me.xdrMember(xdr, xdr.OffsetofL5))
+}
+
+func (me *XdrReader) HttpRequest(xdr *Xdr, obj *XdrHttp) *XdrFile {
+	return me.xdrFile(xdr, obj.OffsetofRequest)
+}
+
+func (me *XdrReader) HttpResponse(xdr *Xdr, obj *XdrHttp) *XdrFile {
+	return me.xdrFile(xdr, obj.OffsetofResponse)
 }
 
 func (me *XdrReader) HttpHost(xdr *Xdr, obj *XdrHttp) []byte {

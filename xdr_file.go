@@ -26,3 +26,9 @@ func (me *XdrReader) dumpXdrFile(xdr *Xdr, obj *XdrFile, tab int) {
 	dump(Tab2+"bkdr:0x%x", obj.Bkdr)
 	dump(Tab2+"digest:%s", hex.EncodeToString(obj.Digest[:]))
 }
+
+func (me *XdrReader) xdrFile(xdr *Xdr, offset XdrOffset) *XdrFile {
+	entry := me.xdrMember(xdr, offset)
+
+	return (*XdrFile)(entry)
+}
