@@ -41,7 +41,6 @@ func (me *XdrReader) dumpFtp(xdr *Xdr, obj *XdrFtp, tab int) {
 	dump(TabN(tab)+"user:%s", string(me.FtpUser(xdr, obj)))
 	dump(TabN(tab)+"pwd:%s", string(me.FtpPwd(xdr, obj)))
 	dump(TabN(tab)+"filename:%s", string(me.FtpFileName(xdr, obj)))
-
 }
 
 func (me *XdrReader) Ftp(xdr *Xdr) *XdrFtp {
