@@ -42,7 +42,6 @@ func (me *XdrReader) dumpRtsp(xdr *Xdr, obj *XdrRtsp, tab int) {
 	dump(TabN(tab)+"url:%s", string(me.RtspUrl(xdr, obj)))
 	dump(TabN(tab)+"user-agent:%s", string(me.RtspUserAgent(xdr, obj)))
 	dump(TabN(tab)+"server-ip:%s", string(me.RtspServerIp(xdr, obj)))
-
 }
 
 func (me *XdrReader) Rtsp(xdr *Xdr) *XdrRtsp {
