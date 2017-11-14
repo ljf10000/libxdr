@@ -27,6 +27,10 @@ func (me *XdrRtsp) Size() int {
 	return SizeofXdrRtsp
 }
 
+func (me *XdrReader) dumpRtsp(xdr *Xdr, obj *XdrRtsp, tab int) {
+
+}
+
 func (me *XdrReader) Rtsp(xdr *Xdr) *XdrRtsp {
 	return (*XdrRtsp)(me.xdrMember(xdr, xdr.OffsetofL5))
 }

@@ -15,3 +15,7 @@ type XdrL7 struct {
 func (me *XdrL7) Size() int {
 	return SizeofXdrL7
 }
+
+func (me *XdrReader) dumpXdrL7(xdr *Xdr, obj *XdrL7, tab int) {
+
+}

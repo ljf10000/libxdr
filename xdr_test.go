@@ -79,11 +79,26 @@ func TestXdrRtsp(t *testing.T) {
 }
 
 func TestXdrSession(t *testing.T) {
-	obj4 := &XdrSession4{}
-	obj6 := &XdrSession6{}
+	obj := &XdrSession{}
+	objChecker(t, obj, unsafe.Sizeof(*obj))
 
+	obj4 := &XdrSession4{}
 	objChecker(t, obj4, unsafe.Sizeof(*obj4))
+
+	obj6 := &XdrSession6{}
 	objChecker(t, obj6, unsafe.Sizeof(*obj6))
+}
+
+func TestXdrSessionSt(t *testing.T) {
+	obj := &XdrSessionSt{}
+
+	objChecker(t, obj, unsafe.Sizeof(*obj))
+}
+
+func TestXdrServiceSt(t *testing.T) {
+	obj := &XdrServiceSt{}
+
+	objChecker(t, obj, unsafe.Sizeof(*obj))
 }
 
 func TestXdrSip(t *testing.T) {
@@ -94,6 +109,12 @@ func TestXdrSip(t *testing.T) {
 
 func TestXdrSsl(t *testing.T) {
 	obj := &XdrSsl{}
+
+	objChecker(t, obj, unsafe.Sizeof(*obj))
+}
+
+func TestXdrTcp(t *testing.T) {
+	obj := &XdrTcp{}
 
 	objChecker(t, obj, unsafe.Sizeof(*obj))
 }

@@ -2,6 +2,7 @@ package libxdr
 
 import (
 	. "asdf"
+	"encoding/hex"
 )
 
 const SizeofXdrDigest = 8 * SizeofInt32
@@ -18,4 +19,10 @@ type XdrFile struct {
 
 func (me *XdrFile) Size() int {
 	return SizeofXdrFile
+}
+
+func (me *XdrReader) dumpXdrFile(xdr *Xdr, obj *XdrFile, tab int) {
+	dump(TabN(tab)+"len:%d", obj.Len)
+	dump(Tab2+"bkdr:0x%x", obj.Bkdr)
+	dump(Tab2+"digest:%s", hex.EncodeToString(obj.Digest[:]))
 }

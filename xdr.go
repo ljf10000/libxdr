@@ -102,6 +102,50 @@ func (me *XdrReader) dump(xdr *Xdr) {
 	dump(Tab+"offsetof-L4:%d", xdr.OffsetofL4)
 	dump(Tab+"offsetof-L5:%d", xdr.OffsetofL5)
 	dump(Tab+"offsetof-L6:%d", xdr.OffsetofL6)
+
+	if 4 == xdr.IpVersion {
+		if obj := me.Session4(xdr); nil != obj {
+			me.dumpSession4(xdr, obj, 1)
+		}
+	} else {
+		if obj := me.Session6(xdr); nil != obj {
+			me.dumpSession6(xdr, obj, 1)
+		}
+	}
+
+	if obj := me.SessionSt(xdr); nil != obj {
+		me.dumpSessionSt(xdr, obj, 1)
+	}
+
+	if obj := me.ServiceSt(xdr); nil != obj {
+		me.dumpServiceSt(xdr, obj, 1)
+	}
+
+	if xdr.OffsetofL4 > 0 {
+		if obj := me.Tcp(xdr); nil != obj {
+			me.dumpTcp(xdr, obj, 1)
+		}
+	}
+
+	if xdr.OffsetofL5 > 0 {
+		if obj := me.Dns(xdr); nil != obj {
+			me.dumpDns(xdr, obj, 1)
+		} else if obj := me.Ftp(xdr); nil != obj {
+			me.dumpFtp(xdr, obj, 1)
+		} else if obj := me.Http(xdr); nil != obj {
+			me.dumpHttp(xdr, obj, 1)
+		} else if obj := me.Mail(xdr); nil != obj {
+			me.dumpMail(xdr, obj, 1)
+		} else if obj := me.Rtsp(xdr); nil != obj {
+			me.dumpRtsp(xdr, obj, 1)
+		} else if obj := me.Sip(xdr); nil != obj {
+			me.dumpSip(xdr, obj, 1)
+		}
+	}
+
+	if xdr.OffsetofL6 > 0 {
+
+	}
 }
 
 func (me *XdrReader) walk(xdr *Xdr, left uint32, walk XdrWalker) error {

@@ -30,6 +30,10 @@ func (me *XdrMail) Size() int {
 	return SizeofXdrMail
 }
 
+func (me *XdrReader) dumpMail(xdr *Xdr, obj *XdrMail, tab int) {
+
+}
+
 func (me *XdrReader) Mail(xdr *Xdr) *XdrMail {
 	return (*XdrMail)(me.xdrMember(xdr, xdr.OffsetofL5))
 }

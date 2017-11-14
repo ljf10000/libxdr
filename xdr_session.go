@@ -20,6 +20,10 @@ func (me *XdrSession) Size() int {
 	return SizeofXdrSession
 }
 
+func (me *XdrReader) dumpXdrSession(xdr *Xdr, obj *XdrSession, tab int) {
+
+}
+
 const SizeofXdrSession4 = SizeofXdrSession + 2*SizeofInt32
 
 type XdrSession4 struct {
@@ -33,6 +37,10 @@ func (me *XdrSession4) Size() int {
 	return SizeofXdrSession4
 }
 
+func (me *XdrReader) dumpSession4(xdr *Xdr, obj *XdrSession4, tab int) {
+
+}
+
 const SizeofXdrSession6 = SizeofXdrSession + 2*16
 
 type XdrSession6 struct {
@@ -44,6 +52,10 @@ type XdrSession6 struct {
 
 func (me *XdrSession6) Size() int {
 	return SizeofXdrSession6
+}
+
+func (me *XdrReader) dumpSession6(xdr *Xdr, obj *XdrSession6, tab int) {
+
 }
 
 func (me *XdrReader) Session4(xdr *Xdr) *XdrSession4 {

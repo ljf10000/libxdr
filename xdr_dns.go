@@ -2,6 +2,7 @@ package libxdr
 
 import (
 	. "asdf"
+	"net"
 )
 
 const (
@@ -39,6 +40,42 @@ type XdrDns struct {
 
 func (me *XdrDns) Size() int {
 	return SizeofXdrDns
+}
+
+func (me *XdrReader) dumpDns(xdr *Xdr, obj *XdrDns, tab int) {
+	dump(TabN(tab) + "dns:")
+
+	tab += 1
+	dump(TabN(tab)+"ip-version:%d", obj.IpVersion)
+	dump(TabN(tab)+"ip-count:%d", obj.IpCount)
+	dump(TabN(tab)+"response-code:%d", obj.ResponseCode)
+	dump(TabN(tab)+"count-request:%d", obj.CountRequest)
+	dump(TabN(tab)+"count-response-record:%d", obj.CountResponseRecord)
+	dump(TabN(tab)+"count-response-auth:%d", obj.CountResponseAuth)
+	dump(TabN(tab)+"count-response-extra:%d", obj.CountResponseExtra)
+	dump(TabN(tab)+"delay:%d", obj.Delay)
+	dump(TabN(tab)+"ip:%d", obj.Ip4)
+	dump(TabN(tab)+"domain:%s", string(me.DnsDomain(xdr, obj)))
+
+	for i := 0; i < int(obj.IpCount); i++ {
+		if obj.IsIp4() {
+			// host sort
+			ip4 := me.DnsIp4(xdr, obj, i)
+
+			ip := net.IPAddr{
+				IP: net.IP{
+					byte(ip4 >> 24 & 0xff),
+					byte(ip4 >> 16 & 0xff),
+					byte(ip4 >> 8 & 0xff),
+					byte(ip4 >> 0 & 0xff),
+				},
+			}
+
+			dump(TabN(tab)+"ip%d:%s", i, ip.String())
+		} else {
+			dump(TabN(tab)+"ip%d:ipv6address", i)
+		}
+	}
 }
 
 func (me *XdrDns) IsIp4() bool {

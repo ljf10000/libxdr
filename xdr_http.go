@@ -49,6 +49,10 @@ func (me *XdrHttp) Size() int {
 	return SizeofXdrHttp
 }
 
+func (me *XdrReader) dumpHttp(xdr *Xdr, obj *XdrHttp, tab int) {
+
+}
+
 func (me *XdrReader) Http(xdr *Xdr) *XdrHttp {
 	return (*XdrHttp)(me.xdrMember(xdr, xdr.OffsetofL5))
 }

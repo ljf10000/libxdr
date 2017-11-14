@@ -15,6 +15,10 @@ func (me *XdrString) Size() int {
 	return SizeofXdrString
 }
 
+func (me *XdrReader) dumpXdrString(xdr *Xdr, obj *XdrString, tab int) {
+
+}
+
 type XdrBinary = XdrString
 
 func (me *XdrReader) xdrString(xdr *Xdr, xstr XdrString) []byte {

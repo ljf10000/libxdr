@@ -17,7 +17,8 @@ type XdrCert struct {
 	V        byte
 	Version  byte
 	KeyUsage uint16
-	_        Pad4
+
+	_ Pad4
 
 	NotBefore uint64
 	NotAfter  uint64
@@ -34,6 +35,10 @@ func (me *XdrCert) Size() int {
 	return SizeofXdrCert
 }
 
+func (me *XdrReader) dumpXdrCert(xdr *Xdr, obj *XdrCert, tab int) {
+
+}
+
 const SizeofXdrSsl = 4*SizeofByte + 2*SizeofXdrArray
 
 type XdrSsl struct {
@@ -48,6 +53,10 @@ type XdrSsl struct {
 
 func (me *XdrSsl) Size() int {
 	return SizeofXdrSsl
+}
+
+func (me *XdrReader) dumpXdrSsl(xdr *Xdr, obj *XdrSsl, tab int) {
+
 }
 
 func (me *XdrReader) Ssl(xdr *Xdr) *XdrSsl {

@@ -24,6 +24,10 @@ func (me *XdrSip) Size() int {
 	return SizeofXdrSip
 }
 
+func (me *XdrReader) dumpSip(xdr *Xdr, obj *XdrSip, tab int) {
+
+}
+
 func (me *XdrReader) Sip(xdr *Xdr) *XdrSip {
 	return (*XdrSip)(me.xdrMember(xdr, xdr.OffsetofL5))
 }

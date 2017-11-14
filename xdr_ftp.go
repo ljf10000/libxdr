@@ -27,6 +27,10 @@ func (me *XdrFtp) Size() int {
 	return SizeofXdrFtp
 }
 
+func (me *XdrReader) dumpFtp(xdr *Xdr, obj *XdrFtp, tab int) {
+
+}
+
 func (me *XdrReader) Ftp(xdr *Xdr) *XdrFtp {
 	return (*XdrFtp)(me.xdrMember(xdr, xdr.OffsetofL5))
 }
