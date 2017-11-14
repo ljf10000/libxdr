@@ -28,6 +28,20 @@ func (me *XdrRtsp) Size() int {
 }
 
 func (me *XdrReader) dumpRtsp(xdr *Xdr, obj *XdrRtsp, tab int) {
+	dump(TabN(tab) + "rtsp:")
+
+	tab += 1
+	dump(TabN(tab)+"port-client-start:%d", obj.PortClientStart)
+	dump(TabN(tab)+"port-client-end:%d", obj.PortClientEnd)
+	dump(TabN(tab)+"port-server-start:%d", obj.PortServerStart)
+	dump(TabN(tab)+"port-server-end:%d", obj.PortServerEnd)
+	dump(TabN(tab)+"count-video:%d", obj.CountVideo)
+	dump(TabN(tab)+"count-audio:%d", obj.CountAudio)
+	dump(TabN(tab)+"describe-delay:%d", obj.DescribeDelay)
+
+	dump(TabN(tab)+"url:%s", string(me.RtspUrl(xdr, obj)))
+	dump(TabN(tab)+"user-agent:%s", string(me.RtspUserAgent(xdr, obj)))
+	dump(TabN(tab)+"server-ip:%s", string(me.RtspServerIp(xdr, obj)))
 
 }
 
@@ -36,13 +50,13 @@ func (me *XdrReader) Rtsp(xdr *Xdr) *XdrRtsp {
 }
 
 func (me *XdrReader) RtspUrl(xdr *Xdr, obj *XdrRtsp) []byte {
-	return me.xdrString(xdr, obj.Url)
+	return me.xdrBinary(xdr, &obj.Url)
 }
 
 func (me *XdrReader) RtspUserAgent(xdr *Xdr, obj *XdrRtsp) []byte {
-	return me.xdrString(xdr, obj.UserAgent)
+	return me.xdrBinary(xdr, &obj.UserAgent)
 }
 
 func (me *XdrReader) RtspServerIp(xdr *Xdr, obj *XdrRtsp) []byte {
-	return me.xdrString(xdr, obj.ServerIp)
+	return me.xdrBinary(xdr, &obj.ServerIp)
 }

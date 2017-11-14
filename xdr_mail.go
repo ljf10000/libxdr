@@ -31,6 +31,19 @@ func (me *XdrMail) Size() int {
 }
 
 func (me *XdrReader) dumpMail(xdr *Xdr, obj *XdrMail, tab int) {
+	dump(TabN(tab) + "mail:")
+
+	tab += 1
+	dump(TabN(tab)+"acs-type:%d", obj.AcsType)
+	dump(TabN(tab)+"msg-type:%d", obj.MsgType)
+	dump(TabN(tab)+"status-code:%d", obj.StatusCode)
+	dump(TabN(tab)+"length:%d", obj.Length)
+
+	dump(TabN(tab)+"user:%s", string(me.MailUser(xdr, obj)))
+	dump(TabN(tab)+"domain:%s", string(me.MailDomain(xdr, obj)))
+	dump(TabN(tab)+"sender:%s", string(me.MailSender(xdr, obj)))
+	dump(TabN(tab)+"recver:%s", string(me.MailRecver(xdr, obj)))
+	dump(TabN(tab)+"hdr:%s", string(me.MailHdr(xdr, obj)))
 
 }
 
@@ -39,21 +52,21 @@ func (me *XdrReader) Mail(xdr *Xdr) *XdrMail {
 }
 
 func (me *XdrReader) MailUser(xdr *Xdr, obj *XdrMail) []byte {
-	return me.xdrString(xdr, obj.User)
+	return me.xdrBinary(xdr, &obj.User)
 }
 
 func (me *XdrReader) MailDomain(xdr *Xdr, obj *XdrMail) []byte {
-	return me.xdrString(xdr, obj.Domain)
+	return me.xdrBinary(xdr, &obj.Domain)
 }
 
 func (me *XdrReader) MailSender(xdr *Xdr, obj *XdrMail) []byte {
-	return me.xdrString(xdr, obj.Sender)
+	return me.xdrBinary(xdr, &obj.Sender)
 }
 
 func (me *XdrReader) MailRecver(xdr *Xdr, obj *XdrMail) []byte {
-	return me.xdrString(xdr, obj.Recver)
+	return me.xdrBinary(xdr, &obj.Recver)
 }
 
 func (me *XdrReader) MailHdr(xdr *Xdr, obj *XdrMail) []byte {
-	return me.xdrString(xdr, obj.Hdr)
+	return me.xdrBinary(xdr, &obj.Hdr)
 }

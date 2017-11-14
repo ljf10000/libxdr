@@ -50,7 +50,37 @@ func (me *XdrHttp) Size() int {
 }
 
 func (me *XdrReader) dumpHttp(xdr *Xdr, obj *XdrHttp, tab int) {
+	dump(TabN(tab) + "ftp:")
 
+	tab += 1
+	dump(TabN(tab)+"time-request:%d", obj.TimeRequest)
+	dump(TabN(tab)+"time-response:%d", obj.TimeFirstResponse)
+	dump(TabN(tab)+"time-last-content:%d", obj.TimeLastContent)
+	dump(TabN(tab)+"service-delay:%d", obj.ServiceDelay)
+	dump(TabN(tab)+"content-length:%d", obj.ContentLength)
+	dump(TabN(tab)+"status-code:%d", obj.StatusCode)
+	dump(TabN(tab)+"method:%d", obj.Method)
+	dump(TabN(tab)+"version:%d", obj.Version)
+	dump(TabN(tab)+"flags:%d", obj.Flags)
+	dump(TabN(tab)+"ie:%d", obj.Ie)
+	dump(TabN(tab)+"portal:%d", obj.Portal)
+
+	dump(TabN(tab)+"host:%s", string(me.HttpHost(xdr, obj)))
+	dump(TabN(tab)+"url:%s", string(me.HttpUrl(xdr, obj)))
+	dump(TabN(tab)+"host-xonline:%s", string(me.HttpHostXonline(xdr, obj)))
+	dump(TabN(tab)+"user-agent:%s", string(me.HttpUserAgent(xdr, obj)))
+	dump(TabN(tab)+"content:%s", string(me.HttpContent(xdr, obj)))
+	dump(TabN(tab)+"refer:%s", string(me.HttpRefer(xdr, obj)))
+	dump(TabN(tab)+"cookie:%s", string(me.HttpCookie(xdr, obj)))
+	dump(TabN(tab)+"location:%s", string(me.HttpLocation(xdr, obj)))
+
+	if obj.OffsetofRequest > 0 {
+
+	}
+
+	if obj.OffsetofResponse > 0 {
+
+	}
 }
 
 func (me *XdrReader) Http(xdr *Xdr) *XdrHttp {
@@ -58,33 +88,33 @@ func (me *XdrReader) Http(xdr *Xdr) *XdrHttp {
 }
 
 func (me *XdrReader) HttpHost(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.Host)
+	return me.xdrBinary(xdr, &obj.Host)
 }
 
 func (me *XdrReader) HttpUrl(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.Url)
+	return me.xdrBinary(xdr, &obj.Url)
 }
 
 func (me *XdrReader) HttpHostXonline(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.HostXonline)
+	return me.xdrBinary(xdr, &obj.HostXonline)
 }
 
 func (me *XdrReader) HttpUserAgent(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.UserAgent)
+	return me.xdrBinary(xdr, &obj.UserAgent)
 }
 
 func (me *XdrReader) HttpContent(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.Content)
+	return me.xdrBinary(xdr, &obj.Content)
 }
 
 func (me *XdrReader) HttpRefer(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.Refer)
+	return me.xdrBinary(xdr, &obj.Refer)
 }
 
 func (me *XdrReader) HttpCookie(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.Cookie)
+	return me.xdrBinary(xdr, &obj.Cookie)
 }
 
 func (me *XdrReader) HttpLocation(xdr *Xdr, obj *XdrHttp) []byte {
-	return me.xdrString(xdr, obj.Location)
+	return me.xdrBinary(xdr, &obj.Location)
 }

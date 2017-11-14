@@ -21,10 +21,14 @@ func (me *XdrReader) dumpXdrString(xdr *Xdr, obj *XdrString, tab int) {
 
 type XdrBinary = XdrString
 
-func (me *XdrReader) xdrString(xdr *Xdr, xstr XdrString) []byte {
+func (me *XdrReader) xdrBinary(xdr *Xdr, xstr *XdrString) []byte {
 	if 0 == xstr.Len || 0 == xstr.Offset {
 		return nil
 	}
 
 	return ObjToSlice(me.xdrMember(xdr, xstr.Offset), int(xstr.Len))
+}
+
+func (me *XdrReader) xdrString(xdr *Xdr, xstr *XdrString) string {
+	return string(me.xdrBinary(xdr, xstr))
 }

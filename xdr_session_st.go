@@ -20,7 +20,22 @@ func (me *XdrSessionSt) Size() int {
 }
 
 func (me *XdrReader) dumpSessionSt(xdr *Xdr, obj *XdrSessionSt, tab int) {
+	dump(TabN(tab) + "session-st:")
 
+	tab += 1
+	for i := 0; i < 2; i++ {
+		prefix := "up"
+		if 1 == i {
+			prefix = "down"
+		}
+
+		dump(TabN(tab)+"%s-flow:%d", prefix, obj.Flow[i])
+		dump(TabN(tab)+"%s-ip-packet:%d", prefix, obj.IpPacket[i])
+		dump(TabN(tab)+"%s-tcp-disorder:%d", prefix, obj.TcpDisorder[i])
+		dump(TabN(tab)+"%s-tcp-retransmit:%d", prefix, obj.TcpRetransmit[i])
+		dump(TabN(tab)+"%s-ip-frag:%d", prefix, obj.IpFrag[i])
+		dump(TabN(tab)+"%s-duration:%d", prefix, obj.Duration[i])
+	}
 }
 
 func (me *XdrReader) SessionSt(xdr *Xdr) *XdrSessionSt {

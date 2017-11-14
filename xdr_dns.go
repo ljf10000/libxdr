@@ -99,7 +99,7 @@ func (me *XdrReader) Dns(xdr *Xdr) *XdrDns {
 }
 
 func (me *XdrReader) DnsDomain(xdr *Xdr, obj *XdrDns) []byte {
-	return me.xdrString(xdr, obj.Domain)
+	return me.xdrBinary(xdr, &obj.Domain)
 }
 
 func (me *XdrReader) DnsIp4(xdr *Xdr, obj *XdrDns, idx int) XdrIp4Addr {

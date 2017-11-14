@@ -38,7 +38,23 @@ func (me *XdrTcp) Size() int {
 }
 
 func (me *XdrReader) dumpTcp(xdr *Xdr, obj *XdrTcp, tab int) {
+	dump(TabN(tab) + "tcp:")
 
+	tab += 1
+	dump(TabN(tab)+"syn-ack-to-syn-time:%d", obj.SynAckToSynTime)
+	dump(TabN(tab)+"ack-to-syn-time:%d", obj.AckToSynTime)
+	dump(TabN(tab)+"complete:%d", obj.Complete)
+	dump(TabN(tab)+"close-reason:%d", obj.CloseReason)
+	dump(TabN(tab)+"first-request-delay:%d", obj.FirstRequestDelay)
+	dump(TabN(tab)+"first-response-delay:%d", obj.FirstResponseDelay)
+	dump(TabN(tab)+"window:%d", obj.Window)
+	dump(TabN(tab)+"mss:%d", obj.Mss)
+	dump(TabN(tab)+"count-retry:%d", obj.CountRetry)
+	dump(TabN(tab)+"count-retry-ack:%d", obj.CountRetryAck)
+	dump(TabN(tab)+"count-ack:%d", obj.CountAck)
+	dump(TabN(tab)+"connect-status:%d", obj.ConnectStatus)
+	dump(TabN(tab)+"handshake12:%d", obj.HandShake12)
+	dump(TabN(tab)+"handshake23:%d", obj.HandShake23)
 }
 
 func (me *XdrReader) Tcp(xdr *Xdr) *XdrTcp {
